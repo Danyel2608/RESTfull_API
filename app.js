@@ -1,21 +1,47 @@
-//Cargamos el modulo http en el servidor
-const http = require("http");
-//Selecionamos el puerto 8000 para evitar conflictos con el Front,puerto 3000
-const PORT = 8002;
-//Creamos un servidor http con una función callback que gestione los codigos de respuesta
-const server = http
-  .createServer(
-    //res = request(peticion),res=response(respuesta)
-    //Para cada petcion en la pagina hay (un objeto): una peticion y una respuesta
-    //Request contiene los detalles de la peticion
-    //Response enviará la respuesta al cliente
-    (req, res) => {
-      res.statusCode = 200;
-      //Cabeceras
-      res.setHeader("Content-Type", "text/hmtl");
-      res.end("<h1>Hello Word!</h1>");
-    }
-  )
-  .listen(PORT, () => {
-    console.log(`server runnig at http://localhost:${PORT}`);
-  });
+// importar los módulo express y mongoose
+const express = require("express");
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", true);
+//obtener la informacion del archivo .env
+require("dotenv").config();
+//alamcenar la cadena de conexion
+const mongoString = process.env.DATABASE_URL;
+
+//conectar con la base de datos
+mongoose.connect(mongoString, {
+  useNewUrlParser: true,
+});
+//guardar conexion en una constante
+const db = mongoose.connection;
+
+//verificar si la conexion ha sido exitosa
+db.on("error", (error) => {
+  console.log(error);
+});
+
+//se ejecuta una unica vez,por eso once en lugar de on,se conecta a base de datos,en lugar de cada peticion
+db.once("connected", () => {
+  console.log("succesfully connected");
+});
+
+//ecibiendo una notificacion cuando la conexion se haya cerrado
+db.on("disconeected", () => {
+  console.log("mongoose default connection is disconnected");
+});
+
+//importacion de controladores
+const users=require("./Controller/userController")
+
+// seleccionar el puerto 8000, para evitar conflictos con el front (3000)
+const PORT = 8000;
+// La función express() exportada por el módulo express crea una aplicación Express.
+const app = express();
+// Analiza las solicitudes que contienen archivos json
+app.use(express.json());
+
+app.use("/users",users)
+
+app.listen(PORT, () => {
+  // función callback que se ejecutará cuando el servidor esté listo
+  console.log(`Server running at http://localhost:${PORT}`);
+});
