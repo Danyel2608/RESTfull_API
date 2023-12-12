@@ -12,20 +12,20 @@ const userSchema = new Schema(
     },
     lastName: {
       type: String,
-      require: false,
+      required: false,
     },
     email: {
       type: String,
       unique: true,
-      require: true,
+      required: true,
     },
     role: {
       type: String,
-      require: true,
+      required: true,
     },
     skills: {
       type: Array,
-      require: true,
+      required: false,
       default: [],
       validate: [
         (array) =>
@@ -42,7 +42,7 @@ const userSchema = new Schema(
     },
     personality: {
       type: Object,
-      require: true,
+      required: false,
       validate: [
         (obj) =>
           obj.constructor === Object &&
@@ -56,6 +56,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = mongoose.model("User", userSchema);
+const user = mongoose.model("user", userSchema);
 
-module.exports = User;
+module.exports = user;

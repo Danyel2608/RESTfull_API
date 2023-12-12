@@ -2,11 +2,10 @@
 const express = require("express");
 const router = express.Router();
 //Importamos modelo con schema correspondiente
-const Model = require("../Model/userModel");
-const {verifyToken} = require("./lib/util");
+const Model = require("../Model/houseModel");
 
-//Escuchar peticiones GET con verificacion del token que generamos en el /auth/singup que expira en 15 min
-router.get("/", verifyToken, async (req, res) => {
+//Escuchar peticiones GET
+router.get("/", async (req, res) => {
   //Metodo get buscando mediante Model y a su vez en la coleccion users de mongodb de la base de datos Skynet del .env
   // Model.find()
   //   .then(
@@ -34,7 +33,7 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
-//Obtener documento
+//Obtener documento por id
 router.get("/:id", (req, res) => {
   //más correco usar .exec()
   Model.findById(req.params.id)
@@ -52,16 +51,91 @@ router.get("/:id", (req, res) => {
       })
     );
 });
-
+//Obtener members by id
+router.get("/:id/members", async (req, res) => {
+  //más correco usar .exec()
+  Model.findById(req.params.id)
+    .exec()
+    .then(
+      (data) => res.status(200).json({ status: "succeeded",data, error: null })
+      //atrapar el error
+    )
+    .catch((error) =>
+      res.status(404).json({
+        //mostrarlo
+        status: "failed",
+        data: null,
+        error: error.message,
+      })
+    );
+});
+//Obtener settlemetns by id
+router.get("/:id/settlemetns", async (req, res) => {
+  //más correco usar .exec()
+  Model.findById(req.params.id)
+    .exec()
+    .then(
+      (data) => res.status(200).json({ status: "succeeded",data, error: null })
+      //atrapar el error
+    )
+    .catch((error) =>
+      res.status(404).json({
+        //mostrarlo
+        status: "failed",
+        data: null,
+        error: error.message,
+      })
+    );
+});
+//Obtener allies by id
+router.get("/:id/allies", async (req, res) => {
+  //más correco usar .exec()
+  Model.findById(req.params.id)
+    .exec()
+    .then(
+      (data) => res.status(200).json({ status: "succeeded",data, error: null })
+      //atrapar el error
+    )
+    .catch((error) =>
+      res.status(404).json({
+        //mostrarlo
+        status: "failed",
+        data: null,
+        error: error.message,
+      })
+    );
+});
+//Obtener enemies by id
+router.get("/:id/enemies", async (req, res) => {
+  //más correco usar .exec()
+  Model.findById(req.params.id)
+    .exec()
+    .then(
+      (data) => res.status(200).json({ status: "succeeded",data, error: null })
+      //atrapar el error
+    )
+    .catch((error) =>
+      res.status(404).json({
+        //mostrarlo
+        status: "failed",
+        data: null,
+        error: error.message,
+      })
+    );
+});
 //Recibimos documentos POST
 router.post("/", (req, res) => {
   const data = new Model({
     name: req.body.name,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    role: req.body.role,
-    skills: req.body.skills,
-    personality: req.body.personality,
+    words: req.body.words,
+    description: req.body.description,
+    sigil: req.body.sigil,
+    leader: req.body.leader,
+    region: req.body.region,
+    sttlements: req.body.sttlements,
+    religion: req.body.religion,
+    allies: req.body.allies,
+    enemies: req.body.enemies,
     members: req.body.members,
   });
 
